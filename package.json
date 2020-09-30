@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "start": "ts-node index.ts",
-    "watch": "ts-node-dev index.ts",
+    "start": "ts-node src/",
+    "watch": "ts-node-dev src/",
     "build": "tsc --build tsconfig.json",
     "docker-build": "docker build -t tricks/mite_cli .",
     "docker-run": "docker run -it --rm tricks/mite_cli",
