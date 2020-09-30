@@ -1,10 +1,13 @@
 FROM node:14-slim
 
+ENV APIKEY ""
+ENV COMPANY "tricks"
+
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 
-RUN npm i
+RUN npm ci
 
 COPY * ./
 

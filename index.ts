@@ -2,11 +2,24 @@ import fetch from 'node-fetch';
 import { isHoliday } from 'feiertagejs';
 import { Response } from './types';
 
-// import inquirer from 'inquirer';
 const inquirer = require('inquirer');
+require('dotenv').config();
 
+const apiKey = process.env.APIKEY
+const company = process.env.COMPANY
+if (!apiKey) {
+    console.error('No API Key!')
+    process.exit(1);
+}
+if (apiKey.length !== 16) {
+    console.error('API Key isn\'t 16chars long!')
+    process.exit(1);
+}
+if (!company) {
+    console.error('No Company given. Please provide <COMPANY>.mite.yo.lk as Environment Variable')
+    process.exit(1);
+}
 
-const apiKey = "757832647f37a492";
 const fetchOptions = {
     headers: {
         'X-MiteApiKey': apiKey,
@@ -16,8 +29,12 @@ const fetchOptions = {
 };
 
 async function getTimeEntries(at: string) {
-    const url = `https://tricks.mite.yo.lk/time_entries.json?user_id=current&at=${at}`;
+    const url = `https://${company}.mite.yo.lk/time_entries.json?user_id=current&at=${at}`;
     const response = await fetch(url, fetchOptions)
+    if (!response.ok) {
+        console.error('Reponse not ok :/');
+        process.exit(1);
+    }
     const json: Response[] = await response.json()
     const entries = json.map(entry => ({ date: entry.time_entry.date_at, project: entry.time_entry.project_name, hours: entry.time_entry.minutes / 60 }))
     return entries
