@@ -1,7 +1,7 @@
 require("dotenv").config();
 
-import fetch from "node-fetch";
-import { Response, TimeEntry } from "./types";
+import fetch, { RequestInit } from "node-fetch";
+import { Response, TimeEntryPostBody } from "./types";
 import { company, fetchOptions } from "./settings";
 import workdaysBetweenPastAndNow from "./workdaysBetweenPastAndNow";
 import displayAllTimeEntries from "./displayAllTimeEntries";
@@ -28,7 +28,42 @@ async function getTimeEntriesFromLastAndThisWeek() {
   ].sort((a, b) => String(a.date_at).localeCompare(String(b.date_at)));
 }
 
-async function setTimeEntries(date: Date, project: number, hours: number) {}
+async function setTimeEntries({
+  date_at,
+  project_id,
+  service_id,
+  hours,
+}: {
+  date_at: Date;
+  project_id: number;
+  service_id: number;
+  hours: number;
+}) {
+  const url = `https://${company}.mite.yo.lk/time_entries.json`;
+  const newEntry: TimeEntryPostBody = {
+    time_entry: {
+      date_at,
+      project_id,
+      service_id,
+      note: "",
+      minutes: hours * 60,
+    },
+  };
+  const body = JSON.stringify(newEntry);
+  console.log(body);
+  const options: RequestInit = {
+    ...fetchOptions,
+    method: "POST",
+    body,
+  };
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    console.error("Wrong Response", response);
+    process.exit(1);
+  }
+  const json = await response.json();
+  console.log("ok", json);
+}
 
 async function main() {
   const entries = await getTimeEntriesFromLastAndThisWeek();
@@ -50,19 +85,19 @@ async function main() {
 
   const b = await inquirer.prompt([
     {
-      name: "day",
+      name: "date_at",
       message: "Day",
       type: "list",
       choices: workdaysBetweenPastAndNow(lastDate),
     },
     {
-      name: "project",
+      name: "project_id",
       message: "Project",
       type: "list",
       choices: projects,
     },
     {
-      name: "service",
+      name: "service_id",
       message: "Service",
       type: "list",
       choices: services,
@@ -74,6 +109,7 @@ async function main() {
       default: defaultHours[0].value,
     },
   ]);
+  setTimeEntries(b);
   console.log(b);
 }
 

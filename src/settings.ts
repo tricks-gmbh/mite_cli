@@ -1,3 +1,5 @@
+import { RequestInit } from 'node-fetch';
+
 const apiKey = process.env.APIKEY;
 export const company = process.env.COMPANY;
 
@@ -14,7 +16,7 @@ if (!company) {
     process.exit(1);
 }
 
-export const fetchOptions = {
+export const fetchOptions: RequestInit = {
     headers: {
         'X-MiteApiKey': apiKey,
         'Content-Type': 'application/json',
