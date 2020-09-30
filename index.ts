@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
-import { TimeEntry, Response } from './types';
+import { isHoliday } from 'feiertagejs';
+import { Response } from './types';
 
 const apiKey = "757832647f37a492";
 const fetchOptions = {
@@ -31,6 +32,12 @@ function arrayOfDaysBetweenPastAndNow(pastDate: Date | string) {
     return daylist;
 }
 
+function isWeekend (date: Date) {
+    var day = date.getDay();
+    var isWeekend = (day === 6) || (day === 0);
+    return isWeekend;
+}
+
 async function main() {
     // process.exit(0);
     const entries = [
@@ -40,7 +47,7 @@ async function main() {
     const lastDate = entries[entries.length - 1].date
     entries.forEach(i => console.log(i.date, i.hours, i.project))
     console.log(lastDate);
-    const days = arrayOfDaysBetweenPastAndNow(lastDate);
+    const days = arrayOfDaysBetweenPastAndNow(lastDate).filter(d => !isWeekend(d) && !isHoliday(d, 'NW'));
     console.log(days);
 }
 
