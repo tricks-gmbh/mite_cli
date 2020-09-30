@@ -17,5 +17,5 @@ for other <company>.mite.yo.lk
     cp .env.dist .env
 
 Please edit the .env file
- 
+
     npm run watch

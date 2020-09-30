@@ -1,10 +1,11 @@
 require("dotenv").config();
 
 import fetch from "node-fetch";
-import { Response } from "./types";
+import { Response, TimeEntry } from "./types";
 import { company, fetchOptions } from "./settings";
 import workdaysBetweenPastAndNow from "./workdaysBetweenPastAndNow";
 import displayAllTimeEntries from "./displayAllTimeEntries";
+import getOptionsSortedByUse from "./getOptionsSortedByUse";
 
 const inquirer = require("inquirer");
 
@@ -27,14 +28,25 @@ async function getTimeEntriesFromLastAndThisWeek() {
   ].sort((a, b) => String(a.date_at).localeCompare(String(b.date_at)));
 }
 
-
 async function setTimeEntries(date: Date, project: number, hours: number) {}
 
 async function main() {
   const entries = await getTimeEntriesFromLastAndThisWeek();
   displayAllTimeEntries(entries);
   const lastDate = entries[entries.length - 1].date_at;
-  const projects = Array.from(new Set(entries.map((p) => p.project_name)));
+  const projects = getOptionsSortedByUse(entries, (entry) => ({
+    name: entry.project_name,
+    value: entry.project_id,
+  }));
+
+  const services = getOptionsSortedByUse(entries, (entry) => ({
+    name: entry.service_name,
+    value: entry.service_id,
+  }));
+
+  const defaultHours = getOptionsSortedByUse(entries, (entry) => ({
+    value: entry.minutes / 60,
+  }));
 
   const b = await inquirer.prompt([
     {
@@ -50,9 +62,16 @@ async function main() {
       choices: projects,
     },
     {
+      name: "service",
+      message: "Service",
+      type: "list",
+      choices: services,
+    },
+    {
       name: "hours",
       message: "Hours",
       type: "number",
+      default: defaultHours[0].value,
     },
   ]);
   console.log(b);
