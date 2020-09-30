@@ -1,4 +1,4 @@
-export interface Response {
+export interface TimeEntryResponse {
   time_entry: TimeEntry;
 }
 export interface TimeEntry {

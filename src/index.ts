@@ -1,69 +1,12 @@
 require("dotenv").config();
 
-import fetch, { RequestInit } from "node-fetch";
-import { Response, TimeEntryPostBody } from "./types";
-import { company, fetchOptions } from "./settings";
 import workdaysBetweenPastAndNow from "./workdaysBetweenPastAndNow";
 import displayAllTimeEntries from "./displayAllTimeEntries";
 import getOptionsSortedByUse from "./getOptionsSortedByUse";
+import getTimeEntriesFromLastAndThisWeek from "./getTimeEntriesFromLastAndThisWeek";
+import addTimeEntry from "./addTimeEntry";
 
 const inquirer = require("inquirer");
-
-async function getTimeEntries(at: string) {
-  const url = `https://${company}.mite.yo.lk/time_entries.json?user_id=current&at=${at}`;
-  const response = await fetch(url, fetchOptions);
-  if (!response.ok) {
-    console.error("Response not ok, API-Key korrekt? :/");
-    process.exit(1);
-  }
-  const json: Response[] = await response.json();
-  const entries = json.map((entry) => entry.time_entry);
-  return entries;
-}
-
-async function getTimeEntriesFromLastAndThisWeek() {
-  return [
-    ...(await getTimeEntries("last_week")),
-    ...(await getTimeEntries("this_week")),
-  ].sort((a, b) => String(a.date_at).localeCompare(String(b.date_at)));
-}
-
-async function setTimeEntries({
-  date_at,
-  project_id,
-  service_id,
-  hours,
-}: {
-  date_at: Date;
-  project_id: number;
-  service_id: number;
-  hours: number;
-}) {
-  const url = `https://${company}.mite.yo.lk/time_entries.json`;
-  const newEntry: TimeEntryPostBody = {
-    time_entry: {
-      date_at,
-      project_id,
-      service_id,
-      note: "",
-      minutes: hours * 60,
-    },
-  };
-  const body = JSON.stringify(newEntry);
-  console.log(body);
-  const options: RequestInit = {
-    ...fetchOptions,
-    method: "POST",
-    body,
-  };
-  const response = await fetch(url, options);
-  if (!response.ok) {
-    console.error("Wrong Response", response);
-    process.exit(1);
-  }
-  const json = await response.json();
-  console.log("ok", json);
-}
 
 async function main() {
   const entries = await getTimeEntriesFromLastAndThisWeek();
@@ -83,7 +26,7 @@ async function main() {
     value: entry.minutes / 60,
   }));
 
-  const b = await inquirer.prompt([
+  const inputValues = await inquirer.prompt([
     {
       name: "date_at",
       message: "Day",
@@ -109,8 +52,8 @@ async function main() {
       default: defaultHours[0].value,
     },
   ]);
-  setTimeEntries(b);
-  console.log(b);
+  //   console.log(inputValues);
+  addTimeEntry(inputValues);
 }
 
 main();
