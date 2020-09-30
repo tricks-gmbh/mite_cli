@@ -1,7 +1,10 @@
 import fetch from 'node-fetch';
 import { isHoliday } from 'feiertagejs';
 import { Response } from './types';
-import inquirer from 'inquirer'
+
+// import inquirer from 'inquirer';
+const inquirer = require('inquirer');
+
 
 const apiKey = "757832647f37a492";
 const fetchOptions = {
@@ -39,9 +42,9 @@ function isWeekend(date: Date) {
     return isWeekend;
 }
 
-async function setTimeEntries(date, project, hours) {
-    
-}
+// async function setTimeEntries(date, project, hours) {
+
+// }
 
 async function main() {
     // process.exit(0);
