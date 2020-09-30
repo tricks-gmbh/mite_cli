@@ -36,7 +36,7 @@ async function addTimeEntry({
     process.exit(1);
   }
   const json = await response.json();
-  console.log("ok", json);
+  // console.log("ok", json);
 }
 
 export default addTimeEntry;
