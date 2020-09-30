@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 import { isHoliday } from 'feiertagejs';
 import { Response } from './types';
+import inquirer from 'inquirer'
 
 const apiKey = "757832647f37a492";
 const fetchOptions = {
@@ -32,10 +33,14 @@ function arrayOfDaysBetweenPastAndNow(pastDate: Date | string) {
     return daylist;
 }
 
-function isWeekend (date: Date) {
+function isWeekend(date: Date) {
     var day = date.getDay();
     var isWeekend = (day === 6) || (day === 0);
     return isWeekend;
+}
+
+async function setTimeEntries(date, project, hours) {
+    
 }
 
 async function main() {
@@ -45,10 +50,28 @@ async function main() {
         ...await getTimeEntries('this_week')
     ].sort((a, b) => String(a.date).localeCompare(String(b.date)))
     const lastDate = entries[entries.length - 1].date
+    const projects = Array.from(new Set(entries.map(p => p.project)));
     entries.forEach(i => console.log(i.date, i.hours, i.project))
     console.log(lastDate);
     const days = arrayOfDaysBetweenPastAndNow(lastDate).filter(d => !isWeekend(d) && !isHoliday(d, 'NW'));
     console.log(days);
+
+    const b = await inquirer.prompt([{
+        name: 'day',
+        message: 'Tag',
+        type: 'list',
+        choices: days.map(d => d.toISOString().substr(0, 10))
+    }, {
+        name: 'project',
+        message: 'Projekt',
+        type: 'list',
+        choices: projects
+    }, {
+        name: 'hours',
+        message: 'Stunden',
+        type: 'number'
+    }])
+    console.log(b)
 }
 
 main();
