@@ -1,8 +1,8 @@
 {
   "name": "mite_cli",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.ts",
+  "description": "Kontrolliere mite per CLI :)",
+  "main": "src/index.ts",
   "scripts": {
     "start": "ts-node src/",
     "watch": "ts-node-dev src/",
@@ -11,7 +11,7 @@
     "docker-run": "docker run -it --rm tricks/mite_cli",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Stefan Löhers <s.loehers@tricks.de>",
   "license": "ISC",
   "dependencies": {
     "cli-table3": "^0.6.0",
