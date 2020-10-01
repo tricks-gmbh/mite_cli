@@ -20,4 +20,5 @@ const isWeekend = (date: Date) => date.getDay() === 6 || date.getDay() === 0;
 export default (past: Date) =>
   arrayOfDaysBetweenPastAndNow(past)
     .filter((d) => !isWeekend(d) && !isHoliday(d, "NW"))
-    .map((d) => d.toISOString().substr(0, 10));
+    .map((d) => d.toISOString().substr(0, 10))
+    .reverse();
