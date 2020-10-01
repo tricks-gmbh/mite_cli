@@ -11,7 +11,7 @@ export default (entries: TimeEntry[]) => {
     table.push([
       String(entries.date_at),
       entries.minutes / 60,
-      entries.project_name,
+      `${entries.customer_name.substring(0, 10)} / ${entries.project_name}`,
       entries.service_name
     ]);
   });
