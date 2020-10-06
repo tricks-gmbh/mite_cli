@@ -5,6 +5,7 @@ import displayAllTimeEntries from "./displayAllTimeEntries";
 import getOptionsSortedByUse from "./getOptionsSortedByUse";
 import getTimeEntriesFromLastAndThisWeek from "./getTimeEntriesFromLastAndThisWeek";
 import addTimeEntry from "./addTimeEntry";
+import weekday from "./weekday";
 
 const inquirer = require("inquirer");
 
@@ -34,7 +35,10 @@ async function main() {
         name: "date_at",
         message: "Day",
         type: "list",
-        choices: workdaysBetweenPastAndNow(lastDate),
+        choices: workdaysBetweenPastAndNow(lastDate).map((d) => ({
+          name: `${weekday(d)} ${d}`,
+          value: d,
+        })),
       },
       {
         name: "project_id",
@@ -76,12 +80,12 @@ async function main() {
       {
         name: "doAgain",
         message: "Add more TimeEntries?",
-        type: 'confirm',
+        type: "confirm",
         default: false,
       },
     ]);
-    again = doAgain
-  } while ( again )
+    again = doAgain;
+  } while (again);
 }
 
 main();
