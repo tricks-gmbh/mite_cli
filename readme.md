@@ -8,7 +8,7 @@ for tricks
 
 for other <company>.mite.yo.lk
 
-    docker run -it --rm -e COMPANY=demo APIKEY=757832647f37a492 tricks/mite_cli
+    docker run -it --rm -e COMPANY=demo -e APIKEY=757832647f37a492 tricks/mite_cli
 
 ## Dev Use
 
