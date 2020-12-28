@@ -15,7 +15,7 @@ async function main() {
   let again;
 
   do {
-    const lastDate = entries[entries.length - 1].date_at;
+    const lastDate: Date = entries.length ? entries[entries.length - 1].date_at : ((new Date).toISOString().substr(0, 10) as unknown) as Date;
     const projects = getOptionsSortedByUse(entries, (entry) => ({
       name: `${entry.customer_name.substring(0, 10)} / ${entry.project_name}`,
       value: entry.project_id,
