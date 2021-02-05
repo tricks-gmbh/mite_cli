@@ -1,6 +1,6 @@
-import fetch, { RequestInit } from "node-fetch";
-import { company, fetchOptions } from "./settings";
-import { TimeEntryPostBody } from "./types";
+import fetch, { RequestInit } from 'node-fetch';
+import { company, fetchOptions } from './settings';
+import { TimeEntryPostBody } from './types';
 
 async function addTimeEntry({
   date_at,
@@ -19,24 +19,29 @@ async function addTimeEntry({
       date_at,
       project_id,
       service_id,
-      note: "",
+      note: '',
       minutes: hours * 60,
     },
   };
   const body = JSON.stringify(newEntry);
-//   console.log(body);
+  //   console.log(body);
   const options: RequestInit = {
     ...fetchOptions,
-    method: "POST",
+    method: 'POST',
     body,
   };
-  const response = await fetch(url, options);
-  if (!response.ok) {
-    console.error("Wrong Response", response);
+  try {
+    const response = await fetch(url, options);
+    if (!response.ok) {
+      console.error('Wrong Response', response);
+      process.exit(1);
+    }
+    const json = await response.json();
+    // console.log("ok", json);
+  } catch (e) {
+    console.error(e);
     process.exit(1);
   }
-  const json = await response.json();
-  // console.log("ok", json);
 }
 
 export default addTimeEntry;
